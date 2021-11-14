@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 
 import Tasks from "./components/Tasks/Tasks";
 import NewTask from "./components/NewTask/NewTask";
@@ -6,7 +6,7 @@ import useFirebase from "./hooks/use-firebase";
 
 function App() {
   const [tasks, setTasks] = useState([]);
-  const transformTasks = (taskObj) => {
+  const transformTasks = useCallback((taskObj) => {
     const loadedTasks = [];
 
     for (const taskKey in taskObj) {
@@ -14,21 +14,18 @@ function App() {
     }
 
     setTasks(loadedTasks);
-  };
+  }, []);
   const {
     isLoading,
     error,
     sendRequest: fetchTasks,
-  } = useFirebase(
-    {
-      url: "https://react-http-4b88b-default-rtdb.europe-west1.firebasedatabase.app/tasks.json",
-    },
-    transformTasks
-  );
+  } = useFirebase(transformTasks);
 
   useEffect(() => {
-    fetchTasks();
-  }, []);
+    fetchTasks({
+      url: "https://react-http-4b88b-default-rtdb.europe-west1.firebasedatabase.app/tasks.json",
+    });
+  }, [fetchTasks]);
 
   const taskAddHandler = (task) => {
     setTasks((prevTasks) => prevTasks.concat(task));
