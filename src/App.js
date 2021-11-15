@@ -2,27 +2,30 @@ import React, { useEffect, useState } from "react";
 
 import Tasks from "./components/Tasks/Tasks";
 import NewTask from "./components/NewTask/NewTask";
-import useFirebase from "./hooks/use-firebase";
+import useHttp from "./hooks/use-http";
 
 function App() {
   const [tasks, setTasks] = useState([]);
 
-  const { isLoading, error, sendRequest: fetchTasks } = useFirebase();
+  const { isLoading, error, sendRequest: fetchTasks } = useHttp();
 
   useEffect(() => {
-    const transformTasks = (taskObj) => {
+    const transformTasks = (tasksObj) => {
       const loadedTasks = [];
 
-      for (const taskKey in taskObj) {
-        loadedTasks.push({ id: taskKey, text: taskObj[taskKey].text });
+      for (const taskKey in tasksObj) {
+        loadedTasks.push({ id: taskKey, text: tasksObj[taskKey].text });
       }
 
       setTasks(loadedTasks);
     };
-    fetchTasks({
-      url: "https://react-http-4b88b-default-rtdb.europe-west1.firebasedatabase.app/tasks.json",
-      transformTasks,
-    });
+
+    fetchTasks(
+      {
+        url: "https://react-http-4b88b-default-rtdb.europe-west1.firebasedatabase.app/tasks.json",
+      },
+      transformTasks
+    );
   }, [fetchTasks]);
 
   const taskAddHandler = (task) => {

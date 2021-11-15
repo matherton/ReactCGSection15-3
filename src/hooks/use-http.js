@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 
-const useFirebase = () => {
+const useHttp = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -33,4 +33,4 @@ const useFirebase = () => {
   };
 };
 
-export default useFirebase;
+export default useHttp;
